@@ -3,6 +3,7 @@ title: "testing"
 output: html_document
 date: "2023-01-26"
 ---
+
 # Level 1 title
 
 This is a title
@@ -16,3 +17,32 @@ This is a subtitle
 ```
 
 There's the answer.
+
+```{r}
+world <- ne_countries(returnclass = "sf") %>% filter(name != "Antarctica")
+
+color_bins <- colorFactor(heat.colors(7), world$economy)
+
+world_map1 <- leaflet(world) %>%
+  addProviderTiles("Stamen.TonerLite") %>%
+  addPolygons(fillColor = color_bins(world$economy), stroke = FALSE)
+
+world_map1
+```
+
+```{r}
+world_map2 <- leaflet(world) %>%
+  addProviderTiles("Stamen.TonerLite") %>%
+  addPolygons(fillColor = color_bins(world$economy), stroke = FALSE,
+              highlightOptions = highlightOptions(fillColor = "red", fillOpacity = 0.5),
+              label = "This is a country",
+              popup = "That's all I know")
+world_map2
+```
+
+```{r}
+world_map3 <- leaflet(world) %>%
+addProviderTiles("Stamen.TonerLite") %>%
+addPolygons(fillColor = color_bins(world$economy), stroke = FALSE)
+world_map3
+```

@@ -1,0 +1,808 @@
+##The code below was orginally copied from Maggie Weese's github on May 8, 2023 for the purpose of moving the ownership of the maps to Bela Garces, as well as updating the maps to include new grant rounds starting in 2021. 
+
+---
+title: "SAGE Map"
+author: "Maggie Weese and Bela Garces"
+date: "May 8, 2023"
+output: 
+  html_document:
+    theme: spacelab
+    toc: true
+    toc_float: true
+ 
+---
+
+## Downloading Libraries
+```{r, warning=FALSE, results=FALSE, message=FALSE}
+library(tidyverse)
+library(sf)
+library(leaflet)
+library(htmltools)
+library(htmlwidgets)
+library(stringr)
+```
+
+## Creating Centroids for My Data
+```{r, warning=FALSE, results=FALSE, message=FALSE}
+
+# Hi! If you are here, you must  be updating the SAGE online maps which is exciting! 
+
+# 1. First step to do this is to upload the data you plan to use by selecting File > Import Dataset > From Excel 
+
+# 2. Run the code below by clicking into this gray 'chunk' and holding down Ctrl Shift and Enter at the same time. This line of code sets the name of your spreadsheet (the text after the arrow) to from now on be SAGE_pts
+
+SAGE_pts <- Subgrant_Info_Tracker_forMap_Update
+
+
+```
+
+```{r}
+
+# 3. This chunk of code is looking at the spreadsheet you uploaded and renamed SAGE_pts and manually groups rows in the spreadsheet. For example, in the first line it sets R1 to be lines 1 (row 1 in R but really row 2 in the original spreadsheet because row 1 in the original spreadsheet is the column titles) through 5 in the SAGE_pts spreadsheet. From here on out, when you call R1, you will be calling all the rows set to be apart of it here. 
+
+
+R1 <- SAGE_pts[1:5,]
+
+R2 <- SAGE_pts[6:8,]
+
+R3 <- SAGE_pts[9:15,]
+
+R4 <- SAGE_pts[16:19,]
+
+R5 <- SAGE_pts[20:24,]
+
+WEJ <- SAGE_pts[25:35,]
+
+Worker <- SAGE_pts[36:41,]
+
+# 4. The section below sets up the formatting for the pop up text that appears for each dot on the map. Specifically, it creates a thing called 'describe' that uses data in SAGE_pts and pulls out the project name, lead, etc. What is in the quotes in between the commas is basically what appears. The "</b>" means to hit enter.
+
+SAGE_pts$describe <- paste("<b>",  
+         "<p style='color:Black;'>", SAGE_pts$ProjectName, "</b>", "<br/>", 
+        "<b>", "<p style='color:Black;'>", "Project Lead:", "</b>", SAGE_pts$Lead, "<br/>", 
+        "<b>", "<p style='color:Black;'>", "Project Partners:", "</b>", SAGE_pts$Partners, "<br/>",
+        "<b>", "<p style='color:Black;'>", "Location:","</b>", SAGE_pts$Locations) %>%
+  lapply(htmltools::HTML)
+
+```
+
+```{r, fig.width=8, fig.height=8}
+
+# 5. Map 1 - DRAFT map not a final version
+
+# In this section of the code, we start making maps! Many of the first maps are trial maps where I changed different parts of the code to see what it would look like (for example in this map I did not have a key and the dots look more opaque than in other maps). For this map I will talk through what each line is doing but know that the same rules apply to all the maps that follow - the changes are mainly aesthetic.
+
+SAGE_map_notfinal1 <- leaflet(SAGE_pts) %>%   # The line is creating a map called SAGE_map1 that uses the library called leaflet (we downloaded it at the beginning) to visualize SAGE_pts. 
+  addProviderTiles(providers$OpenStreetMap.Mapnik) %>% # Setting the map design based on options listed here (not all work) https://leaflet-extras.github.io/leaflet-providers/preview/
+  
+# In this sections below, we are adding our project dots. The first line adds our first set of circles by using the function addCircle to pull in the data for the rows we named R1. We are setting the location of that dot on the map to be based on the long and lat listed in the spreadsheet (it calls the specific column names so if you change them update it here). It also determines the aesthetics of the dots - setting them to be green with a opacity of 1, to be called Investment Mapping Tools, and when you scroll over the dots, to turn black with opacity of .2 and have the blurb describe appear. This logic repeats for each grant round.
+
+addCircles(data=R1, ~longitude, ~latitude, fillColor="Green", fillOpacity = 1, color="Green", radius = 800, group = "Investment Mapping Tools", highlightOptions = highlightOptions(color = "Black", opacity = .2), 
+                                    popup = ~describe) %>% 
+  
+
+addCircles(data=R2, ~longitude, ~latitude, fillOpacity=0.8, fillColor = "Yellow", color="Yellow",  radius = 800, group = "Remedy and OGMs", highlightOptions = highlightOptions(color = "Black", opacity = .2), 
+                                    popup = ~describe) %>%
+ 
+ 
+ addCircles(data=R3, ~longitude, ~latitude, fillOpacity=0.8, fillColor = "Orange", color="Orange", radius = 800, group = "Community Driven Strategies", highlightOptions = highlightOptions(color = "Black", opacity = 0.2),
+                           popup = ~describe) %>%
+
+ 
+addCircles(data=R4, ~longitude, ~latitude, fillColor="Red", color="Red", radius = 800, group = "Enforcement Strategies", highlightOptions = highlightOptions(color = "Black", opacity = 0.2),
+                                  popup = ~describe) %>%
+
+  
+addCircles(data=R5, ~longitude, ~latitude, fillOpacity=0.8, fillColor="Blue", color="Blue",  radius = 800, group = "Remedy for Mining Disasters", highlightOptions = highlightOptions(color = "Black", opacity = 0.2),
+                                   popup = ~describe) %>%
+
+
+addCircles(data=WEJ, ~longitude, ~latitude, fillOpacity=0.8, fillColor="Purple", color="Purple", radius = 80, group = "Women's Economic Justice", highlightOptions = highlightOptions(color = "Black", opacity = 0.2),
+                                      popup = ~describe) %>%
+
+  
+addCircles(data=Worker, ~longitude, ~latitude, fillOpacity=0.8, fillColor="Pink", color="Pink", opacity = .5, group = "Round 6", highlightOptions = highlightOptions(color = "Black", opacity = 0.2),
+                                    popup = ~describe) %>%
+
+# Here, we are adding a control layer (the box that lets you turn on and off grant rounds)
+  
+addLayersControl(
+    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Women's Economic Justice", "Round 6"),
+    options = layersControlOptions(collapsed = FALSE))
+
+SAGE_map_notfinal1 # This calls the map we just made and has it pop up below
+
+
+```
+
+```{r, fig.width=8, fig.height=8}
+
+# 6. Map 2 - DRAFT map not a final version
+ 
+
+# Similarly, here I repeat the code from above but make some aesthetic changes. First, I add this minZoom function that restricts how far you can zoom out and in. Then I make changes to the dots appearances including varying the opacity (set to different amounts), dot color equal to the actual HEX code, and increase the size of the dots to 5.2. In addition, you will see at the bottom I call a function called set MaxBounds which limits how far you can move up down and left right on the map 
+
+SAGE_map_notfinal2 <- leaflet(SAGE_pts, options = leafletOptions(minZoom = 2, maxZoom = 4)) %>%
+  addProviderTiles(providers$OpenStreetMap.DE) %>%
+  
+
+addCircleMarkers(data=R1, ~longitude, ~latitude, fillColor="#618f5b", fillOpacity = .95, color=NA, group = "Investment Mapping Tools", radius = 5.2,
+                           popup = ~describe) %>%
+
+               
+
+addCircleMarkers(data=R2, ~longitude, ~latitude, fillOpacity=.9, fillColor = "#bcbb24", color=NA, group = "Remedy and OGMs", radius = 5.2,
+                           popup = ~describe) %>% 
+  
+ 
+addCircleMarkers(data=R3, ~longitude, ~latitude, fillOpacity=0.7, fillColor = "#ca7112", color= NA, group = "Community Driven Strategies", radius = 5.2,
+                           popup = ~describe) %>%
+
+ 
+addCircleMarkers(data=R4, ~longitude, ~latitude, fillOpacity=0.75, fillColor="#b13128", color= NA, group = "Enforcement Strategies", radius = 5.2,
+                                  popup = ~describe) %>%
+
+  
+addCircleMarkers(data=R5, ~longitude, ~latitude, fillOpacity=0.8, fillColor="#516c86", color= NA, group = "Remedy for Mining Disasters", radius = 5.2,
+                                   popup = ~describe) %>%
+
+
+addCircleMarkers(data=WEJ, ~longitude, ~latitude, color = NA, fillColor="#774a6a", fillOpacity = 1, group = "Women's Economic Justice", radius = 5.2,
+                                      popup = ~describe) %>%
+
+addControl("Project Locations", position = "topright") %>%
+
+
+addLayersControl(
+    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Women's Economic Justice", "Round 6"),
+    options = layersControlOptions(collapsed = FALSE)) %>%
+
+
+  setMaxBounds( lng1 = -150,
+                lat1 = -100,
+                lng2 = 150,
+                lat2 = 100)
+
+
+SAGE_map_notfinal2
+```
+
+
+
+```{r}
+
+# 7. Map 3 - DRAFT map not a final version
+
+# In this version I use a very similar approach as before but add a legend to the map. The code for this starts at addLegend and sets the colors to show up in the legend and the corresponding text - order matters! It also makes a title for the legend. The way this map differs from the final map below is that it has both the legend and the checkmark box for the layers but we do not use both of those in any of the final maps
+
+SAGE_map_notfinal3 <- leaflet(SAGE_pts, options = leafletOptions(minZoom = 2, maxZoom = 4)) %>%
+  addProviderTiles(providers$CartoDB.VoyagerLabelsUnder) %>%
+  
+
+addCircleMarkers(data=R1, ~longitude, ~latitude, fillColor="#67A62B", fillOpacity = .85, color=NA, group = "Investment Mapping Tools", radius = 7,
+                           popup = ~describe) %>%
+
+               
+
+addCircleMarkers(data=R2, ~longitude, ~latitude, fillOpacity=.92, fillColor = "#C9C236", color=NA, group = "Remedy and OGMs", radius = 7,
+                           popup = ~describe) %>% 
+  
+ 
+addCircleMarkers(data=R3, ~longitude, ~latitude, fillOpacity=0.8, fillColor = "#D97925", color= NA, group = "Community Driven Strategies", radius = 7,
+                           popup = ~describe) %>%
+
+ 
+addCircleMarkers(data=R4, ~longitude, ~latitude, fillOpacity=0.85, fillColor="#BC302F", color= NA, group = "Enforcement Strategies", radius = 7,
+                                  popup = ~describe) %>%
+
+  
+addCircleMarkers(data=R5, ~longitude, ~latitude, fillOpacity=0.9, fillColor="#3385A6", color= NA, group = "Remedy for Mining Disasters", radius = 7,
+                                   popup = ~describe) %>%
+
+
+addCircleMarkers(data=WEJ, ~longitude, ~latitude, color = NA, fillColor= "#A6608D", fillOpacity = 0.82, group = "Women's Economic Justice", radius = 7,
+                                      popup = ~describe) %>%
+
+addCircleMarkers(data=Worker, ~longitude, ~latitude, color = NA, fillColor= "#6C6C6F", fillOpacity = 0.8, group = "Worker Empowerment Strategies", radius = 7,
+                                      popup = ~describe) %>%
+
+
+addLegend(position = "topright", 
+            colors = c("#4F8F33", 
+                       "#DEDE2A",
+                      "#D97823",
+                      "#A62626",
+                      "#08385C",
+                      "#7D2A8F",
+                       "#6C6C6F"
+                      ),
+           
+           
+            labels = c("Investment Mapping Tools",
+                       "Remedy and OGMs",
+                       "Community Driven Strategies",
+                       "Enforcement Strategies",
+                       "Remedy for Mining Disasters",
+                       "Women's Economic Justice",
+                      "Worker Empowerment Strategies"
+                       ),
+           
+           
+            title = "SAGE Fund Project Locations")  %>%
+  
+  addLayersControl(position = "topleft",
+    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Women's Economic Justice", "Worker Empowerment Strategies"),
+    options = layersControlOptions(collapsed = FALSE)) %>%
+
+  setMaxBounds( lng1 = -150,
+                lat1 = -100,
+                lng2 = 150,
+                lat2 = 100)
+
+
+SAGE_map_notfinal3
+```
+
+
+```{r}
+
+#8. This code exports the map as a html to my GitHub that I can then imbed on the SAGE site. 
+
+saveWidget(SAGE_map_notfinal3, file = "SAGE_Map_NotFinal3.html")
+
+```
+
+#Final Map
+
+```{r}
+
+#9. Website Homepage Map 
+
+# This code creates the final map that is used on the homepage
+
+SAGE_map_homepage_final <- leaflet(SAGE_pts, options = leafletOptions(minZoom = 2, maxZoom = 4)) %>%
+  addProviderTiles(providers$CartoDB.VoyagerNoLabels) %>%
+  
+
+addCircleMarkers(data=R1, ~longitude, ~latitude, fillColor="#67A62B", fillOpacity = .85, color=NA, group = "Investment Mapping Tools", radius = 7,
+                           popup = ~describe) %>%
+
+               
+
+addCircleMarkers(data=R2, ~longitude, ~latitude, fillOpacity=.92, fillColor = "#D9CE04", color=NA, group = "Remedy and OGMs", radius = 7,
+                           popup = ~describe) %>% 
+  
+ 
+addCircleMarkers(data=R3, ~longitude, ~latitude, fillOpacity=0.8, fillColor = "#D97925", color= NA, group = "Community Driven Strategies", radius = 7,
+                           popup = ~describe) %>%
+
+ 
+addCircleMarkers(data=R4, ~longitude, ~latitude, fillOpacity=0.85, fillColor="#BC302F", color= NA, group = "Enforcement Strategies", radius = 7,
+                                  popup = ~describe) %>%
+
+  
+addCircleMarkers(data=R5, ~longitude, ~latitude, fillOpacity=0.9, fillColor="#3385A6", color= NA, group = "Remedy for Mining Disasters", radius = 7,
+                                   popup = ~describe) %>%
+
+
+addCircleMarkers(data=WEJ, ~longitude, ~latitude, color = NA, fillColor= "#8F537A", fillOpacity = 0.82, group = "Women's Economic Justice", radius = 7,
+                                      popup = ~describe) %>%
+
+addCircleMarkers(data=Worker, ~longitude, ~latitude, color = NA, fillColor= "#6C6C6F", fillOpacity = 0.84, group = "Worker Empowerment Strategies", radius = 7,
+                                      popup = ~describe) %>%
+
+
+addLegend(position = "topright", 
+            colors = c("#67A62B", 
+                       "#D9CE04",
+                      "#D97825",
+                      "#BC302F",
+                      "#3385A2",
+                      "#8F537A",
+                       "#6C6C6F"
+                      ),
+          
+          opacity=.78,
+           
+           
+            labels = c("Investment Mapping Tools",
+                       "Remedy and OGMs",
+                       "Community Driven Strategies",
+                       "Enforcement Strategies",
+                       "Remedy for Mining Disasters",
+                       "Women's Economic Justice",
+                      "Worker Empowerment Strategies"
+                       ),
+           
+           
+            title = "SAGE Fund Projects")  %>%   
+  
+
+  setMaxBounds( lng1 = -150,
+                lat1 = -100,
+                lng2 = 150,
+                lat2 = 100)
+
+
+SAGE_map_homepage_final
+```
+
+
+```{r}
+saveWidget(SAGE_map_homepage_final, file = "SAGE_Map_Homepage_final.html")
+
+```
+
+#Map for Each Round
+
+##Round 1
+```{r}
+
+# 10. Round 1 Map 
+
+# The following sections create the maps that show up on each of the grant pages. The reason this code is so long is because I could not find a way to make all the maps at once so for each map, there is a chunk of code that is exactly the same except for one part. That part is this section at the bottom called hideGroup - this hides all other groups besides the grant round you want to show up first. 
+
+
+
+SAGE_mapR1 <- leaflet(SAGE_pts, options = leafletOptions(minZoom = 2, maxZoom = 4)) %>%
+  addProviderTiles(providers$CartoDB.VoyagerNoLabels) %>%
+  
+
+addCircleMarkers(data=R1, ~longitude, ~latitude, fillColor="#67A62B", fillOpacity = .85, color=NA, group = "Investment Mapping Tools", radius = 7,
+                           popup = ~describe) %>%
+
+               
+
+addCircleMarkers(data=R2, ~longitude, ~latitude, fillOpacity=.92, fillColor = "#D9CE04", color=NA, group = "Remedy and OGMs", radius = 7,
+                           popup = ~describe) %>% 
+  
+ 
+addCircleMarkers(data=R3, ~longitude, ~latitude, fillOpacity=0.8, fillColor = "#D97925", color= NA, group = "Community Driven Strategies", radius = 7,
+                           popup = ~describe) %>%
+
+ 
+addCircleMarkers(data=R4, ~longitude, ~latitude, fillOpacity=0.85, fillColor="#BC302F", color= NA, group = "Enforcement Strategies", radius = 7,
+                                  popup = ~describe) %>%
+
+  
+addCircleMarkers(data=R5, ~longitude, ~latitude, fillOpacity=0.9, fillColor="#3385A6", color= NA, group = "Remedy for Mining Disasters", radius = 7,
+                                   popup = ~describe) %>%
+
+
+addCircleMarkers(data=WEJ, ~longitude, ~latitude, color = NA, fillColor= "#8F537A", fillOpacity = 0.82, group = "Women's Economic Justice", radius = 7,
+                                      popup = ~describe) %>%
+
+addCircleMarkers(data=Worker, ~longitude, ~latitude, color = NA, fillColor= "#6C6C6F", fillOpacity = 0.8, group = "Worker Empowerment Strategies", radius = 7,
+                                      popup = ~describe) %>%
+
+   addControl("SAGE Fund Projects", position = "bottomright") %>%
+  
+     addLayersControl(position = "topright",
+    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Women's Economic Justice", "Worker Empowerment Strategies"),
+    options = layersControlOptions(collapsed = FALSE)) %>% 
+  
+  hideGroup("Remedy and OGMs") %>%  hideGroup("Community Driven Strategies") %>%  hideGroup("Enforcement Strategies") %>% hideGroup("Remedy for Mining Disasters") %>% hideGroup("Women's Economic Justice") %>% hideGroup("Worker Empowerment Strategies") %>% 
+
+  setMaxBounds( lng1 = -150,
+                lat1 = -100,
+                lng2 = 150,
+                lat2 = 100)
+
+
+SAGE_mapR1
+           
+  
+```
+
+```{r}
+saveWidget(SAGE_mapR1, file = "SAGE_MapR1.html")
+```
+
+
+##Round 2
+```{r}
+
+SAGE_mapR2 <- leaflet(SAGE_pts, options = leafletOptions(minZoom = 2, maxZoom = 4)) %>%
+  addProviderTiles(providers$CartoDB.VoyagerNoLabels) %>%
+  
+
+addCircleMarkers(data=R1, ~longitude, ~latitude, fillColor="#67A62B", fillOpacity = .85, color=NA, group = "Investment Mapping Tools", radius = 7,
+                           popup = ~describe) %>%
+
+               
+
+addCircleMarkers(data=R2, ~longitude, ~latitude, fillOpacity=.92, fillColor = "#D9CE04", color=NA, group = "Remedy and OGMs", radius = 7,
+                           popup = ~describe) %>% 
+  
+ 
+addCircleMarkers(data=R3, ~longitude, ~latitude, fillOpacity=0.8, fillColor = "#D97925", color= NA, group = "Community Driven Strategies", radius = 7,
+                           popup = ~describe) %>%
+
+ 
+addCircleMarkers(data=R4, ~longitude, ~latitude, fillOpacity=0.85, fillColor="#BC302F", color= NA, group = "Enforcement Strategies", radius = 7,
+                                  popup = ~describe) %>%
+
+  
+addCircleMarkers(data=R5, ~longitude, ~latitude, fillOpacity=0.9, fillColor="#3385A6", color= NA, group = "Remedy for Mining Disasters", radius = 7,
+                                   popup = ~describe) %>%
+
+
+addCircleMarkers(data=WEJ, ~longitude, ~latitude, color = NA, fillColor= "#8F537A", fillOpacity = 0.82, group = "Women's Economic Justice", radius = 7,
+                                      popup = ~describe) %>%
+
+addCircleMarkers(data=Worker, ~longitude, ~latitude, color = NA, fillColor= "#6C6C6F", fillOpacity = 0.8, group = "Worker Empowerment Strategies", radius = 7,
+                                      popup = ~describe) %>%
+
+   addControl("SAGE Fund Projects", position = "bottomright") %>%
+  
+     addLayersControl(position = "topright",
+    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Women's Economic Justice", "Worker Empowerment Strategies"),
+    options = layersControlOptions(collapsed = FALSE)) %>% 
+  
+  hideGroup("Investment Mapping Tools") %>%  hideGroup("Community Driven Strategies") %>%  hideGroup("Enforcement Strategies") %>% hideGroup("Remedy for Mining Disasters") %>% hideGroup("Women's Economic Justice") %>% hideGroup("Worker Empowerment Strategies") %>% 
+
+  setMaxBounds( lng1 = -150,
+                lat1 = -100,
+                lng2 = 150,
+                lat2 = 100)
+
+
+SAGE_mapR2
+```
+ 
+```{r}
+saveWidget(SAGE_mapR2, file = "SAGE_MapR2.html")
+```          
+
+##Round 3
+```{r}
+
+SAGE_mapR3 <- leaflet(SAGE_pts, options = leafletOptions(minZoom = 2, maxZoom = 4)) %>%
+  addProviderTiles(providers$CartoDB.VoyagerNoLabels) %>%
+  
+
+addCircleMarkers(data=R1, ~longitude, ~latitude, fillColor="#67A62B", fillOpacity = .85, color=NA, group = "Investment Mapping Tools", radius = 7,
+                           popup = ~describe) %>%
+
+               
+
+addCircleMarkers(data=R2, ~longitude, ~latitude, fillOpacity=.92, fillColor = "#D9CE04", color=NA, group = "Remedy and OGMs", radius = 7,
+                           popup = ~describe) %>% 
+  
+ 
+addCircleMarkers(data=R3, ~longitude, ~latitude, fillOpacity=0.8, fillColor = "#D97925", color= NA, group = "Community Driven Strategies", radius = 7,
+                           popup = ~describe) %>%
+
+ 
+addCircleMarkers(data=R4, ~longitude, ~latitude, fillOpacity=0.85, fillColor="#BC302F", color= NA, group = "Enforcement Strategies", radius = 7,
+                                  popup = ~describe) %>%
+
+  
+addCircleMarkers(data=R5, ~longitude, ~latitude, fillOpacity=0.9, fillColor="#3385A6", color= NA, group = "Remedy for Mining Disasters", radius = 7,
+                                   popup = ~describe) %>%
+
+
+addCircleMarkers(data=WEJ, ~longitude, ~latitude, color = NA, fillColor= "#8F537A", fillOpacity = 0.82, group = "Women's Economic Justice", radius = 7,
+                                      popup = ~describe) %>%
+
+addCircleMarkers(data=Worker, ~longitude, ~latitude, color = NA, fillColor= "#6C6C6F", fillOpacity = 0.8, group = "Worker Empowerment Strategies", radius = 7,
+                                      popup = ~describe) %>%
+
+   addControl("SAGE Fund Projects", position = "bottomright") %>%
+  
+     addLayersControl(position = "topright",
+    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Women's Economic Justice", "Worker Empowerment Strategies"),
+    options = layersControlOptions(collapsed = FALSE)) %>% 
+  
+  hideGroup("Investment Mapping Tools") %>%  hideGroup("Remedy and OGMs") %>%  hideGroup("Enforcement Strategies") %>% hideGroup("Remedy for Mining Disasters") %>% hideGroup("Women's Economic Justice") %>% hideGroup("Worker Empowerment Strategies") %>% 
+
+  setMaxBounds( lng1 = -150,
+                lat1 = -100,
+                lng2 = 150,
+                lat2 = 100)
+
+
+SAGE_mapR3
+```
+
+```{r}
+saveWidget(SAGE_mapR3, file = "SAGE_MapR3.html")
+```     
+
+
+##Round 4
+```{r}
+
+SAGE_mapR4 <- leaflet(SAGE_pts, options = leafletOptions(minZoom = 2, maxZoom = 4)) %>%
+  addProviderTiles(providers$CartoDB.VoyagerNoLabels) %>%
+  
+
+addCircleMarkers(data=R1, ~longitude, ~latitude, fillColor="#67A62B", fillOpacity = .85, color=NA, group = "Investment Mapping Tools", radius = 7,
+                           popup = ~describe) %>%
+
+               
+
+addCircleMarkers(data=R2, ~longitude, ~latitude, fillOpacity=.92, fillColor = "#D9CE04", color=NA, group = "Remedy and OGMs", radius = 7,
+                           popup = ~describe) %>% 
+  
+ 
+addCircleMarkers(data=R3, ~longitude, ~latitude, fillOpacity=0.8, fillColor = "#D97925", color= NA, group = "Community Driven Strategies", radius = 7,
+                           popup = ~describe) %>%
+
+ 
+addCircleMarkers(data=R4, ~longitude, ~latitude, fillOpacity=0.85, fillColor="#BC302F", color= NA, group = "Enforcement Strategies", radius = 7,
+                                  popup = ~describe) %>%
+
+  
+addCircleMarkers(data=R5, ~longitude, ~latitude, fillOpacity=0.9, fillColor="#3385A6", color= NA, group = "Remedy for Mining Disasters", radius = 7,
+                                   popup = ~describe) %>%
+
+
+addCircleMarkers(data=WEJ, ~longitude, ~latitude, color = NA, fillColor= "#8F537A", fillOpacity = 0.82, group = "Women's Economic Justice", radius = 7,
+                                      popup = ~describe) %>%
+
+addCircleMarkers(data=Worker, ~longitude, ~latitude, color = NA, fillColor= "#6C6C6F", fillOpacity = 0.8, group = "Worker Empowerment Strategies", radius = 7,
+                                      popup = ~describe) %>%
+
+   addControl("SAGE Fund Projects", position = "bottomright") %>%
+  
+     addLayersControl(position = "topright",
+    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Women's Economic Justice", "Worker Empowerment Strategies"),
+    options = layersControlOptions(collapsed = FALSE)) %>% 
+  
+  hideGroup("Investment Mapping Tools") %>%  hideGroup("Remedy and OGMs") %>%  hideGroup("Community Driven Strategies") %>% hideGroup("Remedy for Mining Disasters") %>% hideGroup("Women's Economic Justice") %>% hideGroup("Worker Empowerment Strategies") %>% 
+
+  setMaxBounds( lng1 = -150,
+                lat1 = -100,
+                lng2 = 150,
+                lat2 = 100)
+
+
+SAGE_mapR4
+```
+
+```{r}
+saveWidget(SAGE_mapR4, file = "SAGE_MapR4.html")
+```  
+
+##Round 5
+```{r}
+
+SAGE_mapR5 <- leaflet(SAGE_pts, options = leafletOptions(minZoom = 2, maxZoom = 4)) %>%
+  addProviderTiles(providers$CartoDB.VoyagerNoLabels) %>%
+  
+
+addCircleMarkers(data=R1, ~longitude, ~latitude, fillColor="#67A62B", fillOpacity = .85, color=NA, group = "Investment Mapping Tools", radius = 7,
+                           popup = ~describe) %>%
+
+               
+
+addCircleMarkers(data=R2, ~longitude, ~latitude, fillOpacity=.92, fillColor = "#D9CE04", color=NA, group = "Remedy and OGMs", radius = 7,
+                           popup = ~describe) %>% 
+  
+ 
+addCircleMarkers(data=R3, ~longitude, ~latitude, fillOpacity=0.8, fillColor = "#D97925", color= NA, group = "Community Driven Strategies", radius = 7,
+                           popup = ~describe) %>%
+
+ 
+addCircleMarkers(data=R4, ~longitude, ~latitude, fillOpacity=0.85, fillColor="#BC302F", color= NA, group = "Enforcement Strategies", radius = 7,
+                                  popup = ~describe) %>%
+
+  
+addCircleMarkers(data=R5, ~longitude, ~latitude, fillOpacity=0.9, fillColor="#3385A6", color= NA, group = "Remedy for Mining Disasters", radius = 7,
+                                   popup = ~describe) %>%
+
+
+addCircleMarkers(data=WEJ, ~longitude, ~latitude, color = NA, fillColor= "#8F537A", fillOpacity = 0.82, group = "Women's Economic Justice", radius = 7,
+                                      popup = ~describe) %>%
+
+addCircleMarkers(data=Worker, ~longitude, ~latitude, color = NA, fillColor= "#6C6C6F", fillOpacity = 0.8, group = "Worker Empowerment Strategies", radius = 7,
+                                      popup = ~describe) %>%
+
+   addControl("SAGE Fund Projects", position = "bottomright") %>%
+  
+     addLayersControl(position = "topright",
+    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Women's Economic Justice", "Worker Empowerment Strategies"),
+    options = layersControlOptions(collapsed = FALSE)) %>% 
+  
+  hideGroup("Investment Mapping Tools") %>%  hideGroup("Remedy and OGMs") %>%  hideGroup("Community Driven Strategies") %>% hideGroup("Enforcement Strategies") %>% hideGroup("Women's Economic Justice") %>% hideGroup("Worker Empowerment Strategies") %>% 
+
+  setMaxBounds( lng1 = -150,
+                lat1 = -100,
+                lng2 = 150,
+                lat2 = 100)
+
+
+SAGE_mapR5
+```
+
+```{r}
+saveWidget(SAGE_mapR5, file = "SAGE_MapR5.html")
+```  
+
+
+##Round WEJ
+```{r}
+
+SAGE_mapWEJ <- leaflet(SAGE_pts, options = leafletOptions(minZoom = 2, maxZoom = 4)) %>%
+  addProviderTiles(providers$CartoDB.VoyagerNoLabels) %>%
+  
+
+addCircleMarkers(data=R1, ~longitude, ~latitude, fillColor="#67A62B", fillOpacity = .85, color=NA, group = "Investment Mapping Tools", radius = 7,
+                           popup = ~describe) %>%
+
+               
+
+addCircleMarkers(data=R2, ~longitude, ~latitude, fillOpacity=.92, fillColor = "#D9CE04", color=NA, group = "Remedy and OGMs", radius = 7,
+                           popup = ~describe) %>% 
+  
+ 
+addCircleMarkers(data=R3, ~longitude, ~latitude, fillOpacity=0.8, fillColor = "#D97925", color= NA, group = "Community Driven Strategies", radius = 7,
+                           popup = ~describe) %>%
+
+ 
+addCircleMarkers(data=R4, ~longitude, ~latitude, fillOpacity=0.85, fillColor="#BC302F", color= NA, group = "Enforcement Strategies", radius = 7,
+                                  popup = ~describe) %>%
+
+  
+addCircleMarkers(data=R5, ~longitude, ~latitude, fillOpacity=0.9, fillColor="#3385A6", color= NA, group = "Remedy for Mining Disasters", radius = 7,
+                                   popup = ~describe) %>%
+
+
+addCircleMarkers(data=WEJ, ~longitude, ~latitude, color = NA, fillColor= "#8F537A", fillOpacity = 0.82, group = "Women's Economic Justice", radius = 7,
+                                      popup = ~describe) %>%
+
+addCircleMarkers(data=Worker, ~longitude, ~latitude, color = NA, fillColor= "#6C6C6F", fillOpacity = 0.8, group = "Worker Empowerment Strategies", radius = 7,
+                                      popup = ~describe) %>%
+
+   addControl("SAGE Fund Projects", position = "bottomright") %>%
+  
+     addLayersControl(position = "topright",
+    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Women's Economic Justice", "Worker Empowerment Strategies"),
+    options = layersControlOptions(collapsed = FALSE)) %>% 
+  
+  hideGroup("Investment Mapping Tools") %>%  hideGroup("Remedy and OGMs") %>%  hideGroup("Community Driven Strategies") %>% hideGroup("Enforcement Strategies") %>% hideGroup("Remedy for Mining Disasters") %>% hideGroup("Worker Empowerment Strategies") %>% 
+
+  setMaxBounds( lng1 = -150,
+                lat1 = -100,
+                lng2 = 150,
+                lat2 = 100)
+
+
+SAGE_mapWEJ
+```
+
+```{r}
+saveWidget(SAGE_mapWEJ, file = "SAGE_MapWEJ.html")
+```  
+
+##Round 6
+```{r}
+
+SAGE_mapR6 <- leaflet(SAGE_pts, options = leafletOptions(minZoom = 2, maxZoom = 4)) %>%
+  addProviderTiles(providers$CartoDB.VoyagerNoLabels) %>%
+  
+
+addCircleMarkers(data=R1, ~longitude, ~latitude, fillColor="#67A62B", fillOpacity = .85, color=NA, group = "Investment Mapping Tools", radius = 7,
+                           popup = ~describe) %>%
+
+               
+
+addCircleMarkers(data=R2, ~longitude, ~latitude, fillOpacity=.92, fillColor = "#D9CE04", color=NA, group = "Remedy and OGMs", radius = 7,
+                           popup = ~describe) %>% 
+  
+ 
+addCircleMarkers(data=R3, ~longitude, ~latitude, fillOpacity=0.8, fillColor = "#D97925", color= NA, group = "Community Driven Strategies", radius = 7,
+                           popup = ~describe) %>%
+
+ 
+addCircleMarkers(data=R4, ~longitude, ~latitude, fillOpacity=0.85, fillColor="#BC302F", color= NA, group = "Enforcement Strategies", radius = 7,
+                                  popup = ~describe) %>%
+
+  
+addCircleMarkers(data=R5, ~longitude, ~latitude, fillOpacity=0.9, fillColor="#3385A6", color= NA, group = "Remedy for Mining Disasters", radius = 7,
+                                   popup = ~describe) %>%
+
+
+addCircleMarkers(data=WEJ, ~longitude, ~latitude, color = NA, fillColor= "#8F537A", fillOpacity = 0.82, group = "Women's Economic Justice", radius = 7,
+                                      popup = ~describe) %>%
+
+addCircleMarkers(data=Worker, ~longitude, ~latitude, color = NA, fillColor= "#6C6C6F", fillOpacity = 0.8, group = "Worker Empowerment Strategies", radius = 7,
+                                      popup = ~describe) %>%
+
+   addControl("SAGE Fund Projects", position = "bottomright") %>%
+  
+     addLayersControl(position = "topright",
+    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Women's Economic Justice", "Worker Empowerment Strategies"),
+    options = layersControlOptions(collapsed = FALSE)) %>% 
+  
+  hideGroup("Investment Mapping Tools") %>%  hideGroup("Remedy and OGMs") %>%  hideGroup("Community Driven Strategies") %>% hideGroup("Enforcement Strategies") %>% hideGroup("Remedy for Mining Disasters") %>% hideGroup("Women's Economic Justice") %>% 
+
+  setMaxBounds( lng1 = -150,
+                lat1 = -100,
+                lng2 = 150,
+                lat2 = 100)
+
+
+SAGE_mapR6
+```
+
+```{r}
+saveWidget(SAGE_mapR6, file = "SAGE_MapR6.html")
+```  
+
+
+#Iphone Map
+
+```{r}
+SAGE_map3Phone <- leaflet(SAGE_pts, options = leafletOptions(minZoom = 2, maxZoom = 4)) %>%
+  addProviderTiles(providers$CartoDB.VoyagerNoLabels) %>%
+  
+
+addCircleMarkers(data=R1, ~longitude, ~latitude, fillColor="#67A62B", fillOpacity = .85, color=NA, group = "Investment Mapping Tools", radius = 9.4,
+                           popup = ~describe) %>%
+
+               
+
+addCircleMarkers(data=R2, ~longitude, ~latitude, fillOpacity=.92, fillColor = "#D9CE04", color=NA, group = "Remedy and OGMs", radius = 9.4,
+                           popup = ~describe) %>% 
+  
+ 
+addCircleMarkers(data=R3, ~longitude, ~latitude, fillOpacity=0.8, fillColor = "#D97925", color= NA, group = "Community Driven Strategies", radius = 9.4,
+                           popup = ~describe) %>%
+
+ 
+addCircleMarkers(data=R4, ~longitude, ~latitude, fillOpacity=0.85, fillColor="#BC302F", color= NA, group = "Enforcement Strategies", radius = 9.4,
+                                  popup = ~describe) %>%
+
+  
+addCircleMarkers(data=R5, ~longitude, ~latitude, fillOpacity=0.9, fillColor="#3385A6", color= NA, group = "Remedy for Mining Disasters", radius = 9.4,
+                                   popup = ~describe) %>%
+
+
+addCircleMarkers(data=WEJ, ~longitude, ~latitude, color = NA, fillColor= "#8F537A", fillOpacity = 0.82, group = "Women's Economic Justice", radius = 9.4,
+                                      popup = ~describe) %>%
+
+addCircleMarkers(data=Worker, ~longitude, ~latitude, color = NA, fillColor= "#6C6C6F", fillOpacity = 0.84, group = "Worker Empowerment Strategies", radius = 9.4,
+                                      popup = ~describe) %>%
+
+
+addLegend(position = "topright", 
+            colors = c("#67A62B", 
+                       "#D9CE04",
+                      "#D97825",
+                      "#BC302F",
+                      "#3385A2",
+                      "#8F537A",
+                       "#6C6C6F"
+                      ),
+          
+          opacity=.78,
+           
+           
+            labels = c("Investment Mapping Tools",
+                       "Remedy and OGMs",
+                       "Community Driven Strategies",
+                       "Enforcement Strategies",
+                       "Remedy for Mining Disasters",
+                       "Women's Economic Justice",
+                      "Worker Empowerment Strategies"
+                       ),
+           
+           
+            title = "SAGE Fund Projects")  %>%   
+  
+
+  setMaxBounds( lng1 = -150,
+                lat1 = -100,
+                lng2 = 150,
+                lat2 = 100)
+
+
+SAGE_map3Phone
+```
+
+
+```{r}
+saveWidget(SAGE_map3Phone, file = "SAGE_map3Phone.html")
+``` 
