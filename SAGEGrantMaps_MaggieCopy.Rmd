@@ -55,6 +55,12 @@ WEJ <- SAGE_pts[25:35,]
 
 Worker <- SAGE_pts[36:41,]
 
+Debt <- SAGE_pts[42:50,]
+
+CMB <- SAGE_pts[51:58,]
+
+R8 <- SAGE_pts[59:63,]
+
 # 4. The section below sets up the formatting for the pop up text that appears for each dot on the map. Specifically, it creates a thing called 'describe' that uses data in SAGE_pts and pulls out the project name, lead, etc. What is in the quotes in between the commas is basically what appears. The "</b>" means to hit enter.
 
 SAGE_pts$describe <- paste("<b>",  
@@ -250,6 +256,96 @@ SAGE_map_notfinal3
 
 saveWidget(SAGE_map_notfinal3, file = "SAGE_Map_NotFinal3.html")
 
+```
+
+#Homepage Map Tester
+
+```{r}
+
+# Makes changes to the Website Homepage Map to try out without pushing to the actual website.
+
+# Started with a copy of the final homepage map below and then make changes.
+
+SAGE_map_homepage_test <- leaflet(SAGE_pts, options = leafletOptions(minZoom = 2, maxZoom = 4)) %>%
+  addProviderTiles(providers$CartoDB.VoyagerNoLabels) %>%
+  
+
+addCircleMarkers(data=R1, ~longitude, ~latitude, fillColor="#67A62B", fillOpacity = .85, color=NA, group = "Investment Mapping Tools", radius = 7,
+                           popup = ~describe) %>%
+
+               
+
+addCircleMarkers(data=R2, ~longitude, ~latitude, fillOpacity=.92, fillColor = "#D9CE04", color=NA, group = "Remedy and OGMs", radius = 7,
+                           popup = ~describe) %>% 
+  
+ 
+addCircleMarkers(data=R3, ~longitude, ~latitude, fillOpacity=0.8, fillColor = "#D97925", color= NA, group = "Community Driven Strategies", radius = 7,
+                           popup = ~describe) %>%
+
+ 
+addCircleMarkers(data=R4, ~longitude, ~latitude, fillOpacity=0.85, fillColor="#BC302F", color= NA, group = "Enforcement Strategies", radius = 7,
+                                  popup = ~describe) %>%
+
+  
+addCircleMarkers(data=R5, ~longitude, ~latitude, fillOpacity=0.9, fillColor="#3385A6", color= NA, group = "Remedy for Mining Disasters", radius = 7,
+                                   popup = ~describe) %>%
+
+
+addCircleMarkers(data=WEJ, ~longitude, ~latitude, color = NA, fillColor= "#8F537A", fillOpacity = 0.82, group = "Gender Justice", radius = 7,
+                                      popup = ~describe) %>%
+
+addCircleMarkers(data=Worker, ~longitude, ~latitude, color = NA, fillColor= "#6C6C6F", fillOpacity = 0.84, group = "Worker Empowerment Strategies", radius = 7,
+                                      popup = ~describe) %>%
+  
+addCircleMarkers(data=Debt, ~longitude, ~latitude, color = NA, fillColor= "#48a999", fillOpacity = 0.84, group = "Debt & Post-Covid Recovery", radius = 7,
+                                      popup = ~describe) %>%
+  
+addCircleMarkers(data=R8, ~longitude, ~latitude, color = NA, fillColor= "#336600", fillOpacity = 0.84, group = "Climate Justice and Corporate Accountability", radius = 7,
+                                      popup = ~describe) %>%
+  
+addCircleMarkers(data=CMB, ~longitude, ~latitude, color = NA, fillColor= "#996633", fillOpacity = 0.84, group = "Cross-Movement Building", radius = 7,
+                                      popup = ~describe) %>%
+
+
+addLegend(position = "topright", 
+            colors = c("#67A62B", 
+                       "#D9CE04",
+                      "#D97825",
+                      "#BC302F",
+                      "#3385A2",
+                      "#8F537A",
+                       "#6C6C6F",
+                      "#48a999",
+                      "#336600",
+                      "#996633"
+                      ),
+          
+          opacity=.78,
+           
+           
+            labels = c("Investment Mapping Tools",
+                       "Remedy and OGMs",
+                       "Community Driven Strategies",
+                       "Enforcement Strategies",
+                       "Remedy for Mining Disasters",
+                       "Gender Justice",
+                      "Worker Empowerment Strategies",
+                      "Debt & Post-Covid Recovery",
+                      "Climate Justice and Corporate Accountability",
+                      "Cross-Movement Building"
+                       ),
+           
+           
+            title = "SAGE Fund Projects")  %>%   
+  
+
+  setMaxBounds( lng1 = -150,
+                lat1 = -100,
+                lng2 = 150,
+                lat2 = 100)
+
+
+SAGE_map_homepage_test
 ```
 
 #Final Map
