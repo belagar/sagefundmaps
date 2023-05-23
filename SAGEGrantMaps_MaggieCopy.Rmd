@@ -387,6 +387,15 @@ addCircleMarkers(data=WEJ, ~longitude, ~latitude, color = NA, fillColor= "#8F537
 addCircleMarkers(data=Worker, ~longitude, ~latitude, color = NA, fillColor= "#6C6C6F", fillOpacity = 0.84, group = "Worker Empowerment Strategies", radius = 7,
                                       popup = ~describe) %>%
 
+addCircleMarkers(data=Debt, ~longitude, ~latitude, color = NA, fillColor= "#48a999", fillOpacity = 0.84, group = "Debt & Post-Covid Recovery", radius = 7,
+                                      popup = ~describe) %>%
+  
+addCircleMarkers(data=R8, ~longitude, ~latitude, color = NA, fillColor= "#336600", fillOpacity = 0.84, group = "Climate Justice and Corporate Accountability", radius = 7,
+                                      popup = ~describe) %>%
+  
+addCircleMarkers(data=CMB, ~longitude, ~latitude, color = NA, fillColor= "#996633", fillOpacity = 0.84, group = "Cross-Movement Building", radius = 7,
+                                      popup = ~describe) %>%
+
 
 addLegend(position = "topright", 
             colors = c("#67A62B", 
@@ -395,7 +404,10 @@ addLegend(position = "topright",
                       "#BC302F",
                       "#3385A2",
                       "#8F537A",
-                       "#6C6C6F"
+                       "#6C6C6F",
+                      "#48a999",
+                      "#336600",
+                      "#996633"
                       ),
           
           opacity=.78,
@@ -407,10 +419,14 @@ addLegend(position = "topright",
                        "Enforcement Strategies",
                        "Remedy for Mining Disasters",
                        "Gender Justice",
-                      "Worker Empowerment Strategies"
+                      "Worker Empowerment Strategies",
+                      "Debt & Post-Covid Recovery",
+                      "Climate Justice and Corporate Accountability",
+                      "Cross-Movement Building"
                        ),
            
            
+          
             title = "SAGE Fund Projects")  %>%   
   
 
@@ -470,14 +486,23 @@ addCircleMarkers(data=WEJ, ~longitude, ~latitude, color = NA, fillColor= "#8F537
 
 addCircleMarkers(data=Worker, ~longitude, ~latitude, color = NA, fillColor= "#6C6C6F", fillOpacity = 0.8, group = "Worker Empowerment Strategies", radius = 7,
                                       popup = ~describe) %>%
+  
+addCircleMarkers(data=Debt, ~longitude, ~latitude, color = NA, fillColor= "#48a999", fillOpacity = 0.84, group = "Debt & Post-Covid Recovery", radius = 7,
+                                      popup = ~describe) %>%
+  
+addCircleMarkers(data=R8, ~longitude, ~latitude, color = NA, fillColor= "#336600", fillOpacity = 0.84, group = "Climate Justice and Corporate Accountability", radius = 7,
+                                      popup = ~describe) %>%
+  
+addCircleMarkers(data=CMB, ~longitude, ~latitude, color = NA, fillColor= "#996633", fillOpacity = 0.84, group = "Cross-Movement Building", radius = 7,
+                                      popup = ~describe) %>%
 
    addControl("SAGE Fund Projects", position = "bottomright") %>%
   
      addLayersControl(position = "topright",
-    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Gender Justice", "Worker Empowerment Strategies"),
+    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Gender Justice", "Worker Empowerment Strategies", "Debt & Post-Covid Recovery", "Climate Justice and Corporate Accountability", "Cross-Movement Building"),
     options = layersControlOptions(collapsed = FALSE)) %>% 
   
-  hideGroup("Remedy and OGMs") %>%  hideGroup("Community Driven Strategies") %>%  hideGroup("Enforcement Strategies") %>% hideGroup("Remedy for Mining Disasters") %>% hideGroup("Gender Justice") %>% hideGroup("Worker Empowerment Strategies") %>% 
+  hideGroup("Remedy and OGMs") %>%  hideGroup("Community Driven Strategies") %>%  hideGroup("Enforcement Strategies") %>% hideGroup("Remedy for Mining Disasters") %>% hideGroup("Gender Justice") %>% hideGroup("Worker Empowerment Strategies") %>% hideGroup("Debt & Post-Covid Recovery") %>% hideGroup("Climate Justice and Corporate Accountability") %>% hideGroup("Cross-Movement Building") %>%
 
   setMaxBounds( lng1 = -150,
                 lat1 = -100,
@@ -528,14 +553,23 @@ addCircleMarkers(data=WEJ, ~longitude, ~latitude, color = NA, fillColor= "#8F537
 
 addCircleMarkers(data=Worker, ~longitude, ~latitude, color = NA, fillColor= "#6C6C6F", fillOpacity = 0.8, group = "Worker Empowerment Strategies", radius = 7,
                                       popup = ~describe) %>%
+  
+addCircleMarkers(data=Debt, ~longitude, ~latitude, color = NA, fillColor= "#48a999", fillOpacity = 0.84, group = "Debt & Post-Covid Recovery", radius = 7,
+                                      popup = ~describe) %>%
+  
+addCircleMarkers(data=R8, ~longitude, ~latitude, color = NA, fillColor= "#336600", fillOpacity = 0.84, group = "Climate Justice and Corporate Accountability", radius = 7,
+                                      popup = ~describe) %>%
+  
+addCircleMarkers(data=CMB, ~longitude, ~latitude, color = NA, fillColor= "#996633", fillOpacity = 0.84, group = "Cross-Movement Building", radius = 7,
+                                      popup = ~describe) %>%
 
    addControl("SAGE Fund Projects", position = "bottomright") %>%
   
      addLayersControl(position = "topright",
-    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Gender Justice", "Worker Empowerment Strategies"),
+    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Gender Justice", "Worker Empowerment Strategies", "Debt & Post-Covid Recovery", "Climate Justice and Corporate Accountability", "Cross-Movement Building"),
     options = layersControlOptions(collapsed = FALSE)) %>% 
   
-  hideGroup("Investment Mapping Tools") %>%  hideGroup("Community Driven Strategies") %>%  hideGroup("Enforcement Strategies") %>% hideGroup("Remedy for Mining Disasters") %>% hideGroup("Gender Justice") %>% hideGroup("Worker Empowerment Strategies") %>% 
+  hideGroup("Investment Mapping Tools") %>%  hideGroup("Community Driven Strategies") %>%  hideGroup("Enforcement Strategies") %>% hideGroup("Remedy for Mining Disasters") %>% hideGroup("Gender Justice") %>% hideGroup("Worker Empowerment Strategies") %>% hideGroup("Debt & Post-Covid Recovery") %>% hideGroup("Climate Justice and Corporate Accountability") %>% hideGroup("Cross-Movement Building") %>%
 
   setMaxBounds( lng1 = -150,
                 lat1 = -100,
@@ -584,13 +618,22 @@ addCircleMarkers(data=WEJ, ~longitude, ~latitude, color = NA, fillColor= "#8F537
 addCircleMarkers(data=Worker, ~longitude, ~latitude, color = NA, fillColor= "#6C6C6F", fillOpacity = 0.8, group = "Worker Empowerment Strategies", radius = 7,
                                       popup = ~describe) %>%
 
+addCircleMarkers(data=Debt, ~longitude, ~latitude, color = NA, fillColor= "#48a999", fillOpacity = 0.84, group = "Debt & Post-Covid Recovery", radius = 7,
+                                      popup = ~describe) %>%
+  
+addCircleMarkers(data=R8, ~longitude, ~latitude, color = NA, fillColor= "#336600", fillOpacity = 0.84, group = "Climate Justice and Corporate Accountability", radius = 7,
+                                      popup = ~describe) %>%
+  
+addCircleMarkers(data=CMB, ~longitude, ~latitude, color = NA, fillColor= "#996633", fillOpacity = 0.84, group = "Cross-Movement Building", radius = 7,
+                                      popup = ~describe) %>%
+
    addControl("SAGE Fund Projects", position = "bottomright") %>%
   
      addLayersControl(position = "topright",
-    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Gender Justice", "Worker Empowerment Strategies"),
+    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Gender Justice", "Worker Empowerment Strategies", "Debt & Post-Covid Recovery", "Climate Justice and Corporate Accountability", "Cross-Movement Building"),
     options = layersControlOptions(collapsed = FALSE)) %>% 
   
-  hideGroup("Investment Mapping Tools") %>%  hideGroup("Remedy and OGMs") %>%  hideGroup("Enforcement Strategies") %>% hideGroup("Remedy for Mining Disasters") %>% hideGroup("Gender Justice") %>% hideGroup("Worker Empowerment Strategies") %>% 
+  hideGroup("Investment Mapping Tools") %>%  hideGroup("Remedy and OGMs") %>%  hideGroup("Enforcement Strategies") %>% hideGroup("Remedy for Mining Disasters") %>% hideGroup("Gender Justice") %>% hideGroup("Worker Empowerment Strategies") %>% hideGroup("Debt & Post-Covid Recovery") %>% hideGroup("Climate Justice and Corporate Accountability") %>% hideGroup("Cross-Movement Building") %>%
 
   setMaxBounds( lng1 = -150,
                 lat1 = -100,
@@ -640,13 +683,22 @@ addCircleMarkers(data=WEJ, ~longitude, ~latitude, color = NA, fillColor= "#8F537
 addCircleMarkers(data=Worker, ~longitude, ~latitude, color = NA, fillColor= "#6C6C6F", fillOpacity = 0.8, group = "Worker Empowerment Strategies", radius = 7,
                                       popup = ~describe) %>%
 
+addCircleMarkers(data=Debt, ~longitude, ~latitude, color = NA, fillColor= "#48a999", fillOpacity = 0.84, group = "Debt & Post-Covid Recovery", radius = 7,
+                                      popup = ~describe) %>%
+  
+addCircleMarkers(data=R8, ~longitude, ~latitude, color = NA, fillColor= "#336600", fillOpacity = 0.84, group = "Climate Justice and Corporate Accountability", radius = 7,
+                                      popup = ~describe) %>%
+  
+addCircleMarkers(data=CMB, ~longitude, ~latitude, color = NA, fillColor= "#996633", fillOpacity = 0.84, group = "Cross-Movement Building", radius = 7,
+                                      popup = ~describe) %>%
+
    addControl("SAGE Fund Projects", position = "bottomright") %>%
   
      addLayersControl(position = "topright",
-    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Gender Justice", "Worker Empowerment Strategies"),
+    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Gender Justice", "Worker Empowerment Strategies", "Debt & Post-Covid Recovery", "Climate Justice and Corporate Accountability", "Cross-Movement Building"),
     options = layersControlOptions(collapsed = FALSE)) %>% 
   
-  hideGroup("Investment Mapping Tools") %>%  hideGroup("Remedy and OGMs") %>%  hideGroup("Community Driven Strategies") %>% hideGroup("Remedy for Mining Disasters") %>% hideGroup("Gender Justice") %>% hideGroup("Worker Empowerment Strategies") %>% 
+  hideGroup("Investment Mapping Tools") %>%  hideGroup("Community Driven Strategies") %>%  hideGroup("Remedy and OGMs") %>% hideGroup("Remedy for Mining Disasters") %>% hideGroup("Gender Justice") %>% hideGroup("Worker Empowerment Strategies") %>% hideGroup("Debt & Post-Covid Recovery") %>% hideGroup("Climate Justice and Corporate Accountability") %>% hideGroup("Cross-Movement Building") %>%
 
   setMaxBounds( lng1 = -150,
                 lat1 = -100,
@@ -695,13 +747,22 @@ addCircleMarkers(data=WEJ, ~longitude, ~latitude, color = NA, fillColor= "#8F537
 addCircleMarkers(data=Worker, ~longitude, ~latitude, color = NA, fillColor= "#6C6C6F", fillOpacity = 0.8, group = "Worker Empowerment Strategies", radius = 7,
                                       popup = ~describe) %>%
 
+  addCircleMarkers(data=Debt, ~longitude, ~latitude, color = NA, fillColor= "#48a999", fillOpacity = 0.84, group = "Debt & Post-Covid Recovery", radius = 7,
+                                      popup = ~describe) %>%
+  
+addCircleMarkers(data=R8, ~longitude, ~latitude, color = NA, fillColor= "#336600", fillOpacity = 0.84, group = "Climate Justice and Corporate Accountability", radius = 7,
+                                      popup = ~describe) %>%
+  
+addCircleMarkers(data=CMB, ~longitude, ~latitude, color = NA, fillColor= "#996633", fillOpacity = 0.84, group = "Cross-Movement Building", radius = 7,
+                                      popup = ~describe) %>%
+
    addControl("SAGE Fund Projects", position = "bottomright") %>%
   
      addLayersControl(position = "topright",
-    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Gender Justice", "Worker Empowerment Strategies"),
+    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Gender Justice", "Worker Empowerment Strategies", "Debt & Post-Covid Recovery", "Climate Justice and Corporate Accountability", "Cross-Movement Building"),
     options = layersControlOptions(collapsed = FALSE)) %>% 
   
-  hideGroup("Investment Mapping Tools") %>%  hideGroup("Remedy and OGMs") %>%  hideGroup("Community Driven Strategies") %>% hideGroup("Enforcement Strategies") %>% hideGroup("Gender Justice") %>% hideGroup("Worker Empowerment Strategies") %>% 
+  hideGroup("Investment Mapping Tools") %>%  hideGroup("Community Driven Strategies") %>%  hideGroup("Enforcement Strategies") %>% hideGroup("Remedy and OGMs") %>% hideGroup("Gender Justice") %>% hideGroup("Worker Empowerment Strategies") %>% hideGroup("Debt & Post-Covid Recovery") %>% hideGroup("Climate Justice and Corporate Accountability") %>% hideGroup("Cross-Movement Building") %>%
 
   setMaxBounds( lng1 = -150,
                 lat1 = -100,
@@ -751,13 +812,22 @@ addCircleMarkers(data=WEJ, ~longitude, ~latitude, color = NA, fillColor= "#8F537
 addCircleMarkers(data=Worker, ~longitude, ~latitude, color = NA, fillColor= "#6C6C6F", fillOpacity = 0.8, group = "Worker Empowerment Strategies", radius = 7,
                                       popup = ~describe) %>%
 
+addCircleMarkers(data=Debt, ~longitude, ~latitude, color = NA, fillColor= "#48a999", fillOpacity = 0.84, group = "Debt & Post-Covid Recovery", radius = 7,
+                                      popup = ~describe) %>%
+  
+addCircleMarkers(data=R8, ~longitude, ~latitude, color = NA, fillColor= "#336600", fillOpacity = 0.84, group = "Climate Justice and Corporate Accountability", radius = 7,
+                                      popup = ~describe) %>%
+  
+addCircleMarkers(data=CMB, ~longitude, ~latitude, color = NA, fillColor= "#996633", fillOpacity = 0.84, group = "Cross-Movement Building", radius = 7,
+                                      popup = ~describe) %>%
+
    addControl("SAGE Fund Projects", position = "bottomright") %>%
   
      addLayersControl(position = "topright",
-    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Gender Justice", "Worker Empowerment Strategies"),
+    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Gender Justice", "Worker Empowerment Strategies", "Debt & Post-Covid Recovery", "Climate Justice and Corporate Accountability", "Cross-Movement Building"),
     options = layersControlOptions(collapsed = FALSE)) %>% 
   
-  hideGroup("Investment Mapping Tools") %>%  hideGroup("Remedy and OGMs") %>%  hideGroup("Community Driven Strategies") %>% hideGroup("Enforcement Strategies") %>% hideGroup("Remedy for Mining Disasters") %>% hideGroup("Worker Empowerment Strategies") %>% 
+  hideGroup("Investment Mapping Tools") %>%  hideGroup("Community Driven Strategies") %>%  hideGroup("Enforcement Strategies") %>% hideGroup("Remedy for Mining Disasters") %>% hideGroup("Remedy and OGMs") %>% hideGroup("Worker Empowerment Strategies") %>% hideGroup("Debt & Post-Covid Recovery") %>% hideGroup("Climate Justice and Corporate Accountability") %>% hideGroup("Cross-Movement Building") %>%
 
   setMaxBounds( lng1 = -150,
                 lat1 = -100,
@@ -806,13 +876,22 @@ addCircleMarkers(data=WEJ, ~longitude, ~latitude, color = NA, fillColor= "#8F537
 addCircleMarkers(data=Worker, ~longitude, ~latitude, color = NA, fillColor= "#6C6C6F", fillOpacity = 0.8, group = "Worker Empowerment Strategies", radius = 7,
                                       popup = ~describe) %>%
 
+addCircleMarkers(data=Debt, ~longitude, ~latitude, color = NA, fillColor= "#48a999", fillOpacity = 0.84, group = "Debt & Post-Covid Recovery", radius = 7,
+                                      popup = ~describe) %>%
+  
+addCircleMarkers(data=R8, ~longitude, ~latitude, color = NA, fillColor= "#336600", fillOpacity = 0.84, group = "Climate Justice and Corporate Accountability", radius = 7,
+                                      popup = ~describe) %>%
+  
+addCircleMarkers(data=CMB, ~longitude, ~latitude, color = NA, fillColor= "#996633", fillOpacity = 0.84, group = "Cross-Movement Building", radius = 7,
+                                      popup = ~describe) %>%
+
    addControl("SAGE Fund Projects", position = "bottomright") %>%
   
      addLayersControl(position = "topright",
-    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Gender Justice", "Worker Empowerment Strategies"),
+    overlayGroups = c("Investment Mapping Tools", "Remedy and OGMs", "Community Driven Strategies", "Enforcement Strategies", "Remedy for Mining Disasters", "Gender Justice", "Worker Empowerment Strategies", "Debt & Post-Covid Recovery", "Climate Justice and Corporate Accountability", "Cross-Movement Building"),
     options = layersControlOptions(collapsed = FALSE)) %>% 
   
-  hideGroup("Investment Mapping Tools") %>%  hideGroup("Remedy and OGMs") %>%  hideGroup("Community Driven Strategies") %>% hideGroup("Enforcement Strategies") %>% hideGroup("Remedy for Mining Disasters") %>% hideGroup("Gender Justice") %>% 
+  hideGroup("Investment Mapping Tools") %>%  hideGroup("Community Driven Strategies") %>%  hideGroup("Enforcement Strategies") %>% hideGroup("Remedy for Mining Disasters") %>% hideGroup("Gender Justice") %>% hideGroup("Remedy and OGMs") %>% hideGroup("Debt & Post-Covid Recovery") %>% hideGroup("Climate Justice and Corporate Accountability") %>% hideGroup("Cross-Movement Building") %>%
 
   setMaxBounds( lng1 = -150,
                 lat1 = -100,
